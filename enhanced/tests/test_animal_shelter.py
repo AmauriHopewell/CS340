@@ -115,3 +115,32 @@ def test_aggregation_counts():
 def test_read_invalid_lookup_returns_empty():
     s = admin_shelter()
     assert s.read({"$match": {}}) == []
+
+
+def test_dashboard_demo_mode_without_mongo(monkeypatch):
+    monkeypatch.delenv("MONGO_USER", raising=False)
+    monkeypatch.delenv("MONGO_PASS", raising=False)
+    monkeypatch.delenv("DASH_BACKEND", raising=False)
+    from demo import build_shelter
+
+    s = build_shelter()
+    rows = s.read({})
+    assert len(rows) == 7
+    water = s.read({
+        "breed": {"$in": ["Labrador Retriever Mix", "Chesapeake Bay Retriever", "Newfoundland"]},
+        "sex_upon_outcome": "Intact Female",
+        "age_upon_outcome_in_weeks": {"$gte": 26, "$lte": 156},
+    })
+    assert {r["animal_id"] for r in water} == {"A100", "A101"}
+    pug_only = [r for r in rows if r["animal_id"] == "A106"]
+    assert pug_only and pug_only[0]["breed"] == "Pug"
+
+
+def test_dashboard_live_backend_still_fail_closed(monkeypatch):
+    monkeypatch.setenv("DASH_BACKEND", "live")
+    monkeypatch.delenv("MONGO_USER", raising=False)
+    monkeypatch.delenv("MONGO_PASS", raising=False)
+    from demo import build_shelter
+
+    with pytest.raises(ConfigurationError):
+        build_shelter()
