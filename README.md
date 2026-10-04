@@ -1,3 +1,5 @@
+**CS-499 Milestone Four (branch `cs499-milestone-four`):** original CS-340 AnimalShelter CRUD and dashboard notebook are still at the repo root. The enhancement (env credentials, unique index, allow-list filters, staff vs admin, `dashboard.py`) is in [`enhanced/`](enhanced/). Run `python -m pytest tests -q` from that folder. GitHub Pages is not updated yet.
+
 In developing programs like the CRUD Python module (AnimalShelter.py) for Project One, I focused on principles such as modular design, clear naming, and exception handling to ensure maintainability, readability, and adaptability. 
 
 The module encapsulates MongoDB operations (create, read, update, delete) in a class with methods like read(lookup), using descriptive variable names (e.g., self.collection), 
